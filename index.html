@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="author" content="Allden">
+        <meta name="description" content="Select a pokemon and see how they fare against another random pokemon in this brutal and merciless battle arena. Oh the humanity.">
+        <title>Pokemon Battle Arena</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                height: 100vh;
+                display: flex;
+            }
+
+            #sprites {
+                display: none;
+            }
+
+            #game {
+                height: 100%;
+                width: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="game"></canvas>
+        <script src="./Game.js"></script>
+        <script src="./Pokemon.js"></script>
+        <script src="./Container.js"></script>
+        <script src="./SelectScreen.js"></script>
+        <script src="./InfoScreen.js"></script>
+        <script src="./Battle.js"></script>
+        <script src="./index.js"></script>
+    </body>
+</html>
