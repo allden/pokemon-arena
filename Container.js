@@ -7,7 +7,6 @@ class Container {
         this.width = width;
         this.height = height;
         this.color = color;
-        this.createContainer();
     };
     
     createContainer = () => {

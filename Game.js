@@ -1,15 +1,14 @@
-class Game {
+class Game extends Canvas {
     constructor(width, height) {
-        this.width = width;
-        this.height = height;
+        super(width, height);
         this.mousePos = {};
         this.fetchedPokemon = [];
-        this.loop=false;
+        this.mainLoop=false;
     };
 
     // This is located in Game so I don't have to make an API call each time I resize.
     async fetchPokemon() {
-        return await fetch("https://pokeapi.co/api/v2/pokemon/?limit=8")
+        return await fetch("https://pokeapi.co/api/v2/pokemon/?limit=5")
         .then(res => res.json())
         .then(data => {
             // Get all specific pokemon URLs
@@ -27,15 +26,6 @@ class Game {
         });
     };
 
-    config() {
-        // Set canvas width and height
-        this.canvas = document.getElementById('game');
-        this.ctx = this.canvas.getContext('2d');
-        this.canvas.width = this.width;
-        this.canvas.height = this.height;
-        this.canvas.addEventListener('mousemove', this.getMousePos);
-    };
-
     getMousePos = (e) => {
         this.mousePos.x = e.clientX;
         this.mousePos.y = e.clientY;
@@ -45,12 +35,20 @@ class Game {
     create() {
         this.SelectScreen = new SelectScreen(this.fetchedPokemon, this.canvas, 0, 0, this.width/2, this.height, "#ddd");
         this.SelectScreen.createSelectScreen();
-        this.InfoScreen = new InfoScreen(null, this.canvas, this.width/2, 0, this.width/2, this.height, "#ddd");
+        this.InfoScreen = new InfoScreen(null, this.canvas, this.width/2, 0, this.width/2, this.height, "#333");
+
+        // Event listeners
+        this.canvas.addEventListener('mousemove', this.getMousePos);
+        this.canvas.addEventListener('click', this.battleStart);
     };
+
+    battleStart = (e) => {
+        this.SelectScreen.startBattle(e);
+    }
 
     // The update function which will run every second or so.
     update = () => {
-        this.loop = requestAnimationFrame(this.update);
+        this.mainLoop = requestAnimationFrame(this.update);
         this.ctx.clearRect(0, 0, this.width, this.height);
         this.SelectScreen.refresh();
         this.InfoScreen.refresh();
@@ -58,12 +56,17 @@ class Game {
     };
 
     init = (width=this.width, height=this.height) => {
-        if(this.loop) cancelAnimationFrame(this.loop);
-        this.width = width;
-        this.height = height;
-        this.config();
+        this.resize(width, height);
+        // Remove event listeners if previously set. This should only occur when resizing.
+        this.stop();
         this.ctx.clearRect(0, 0, this.width, this.height);
         this.create();
         this.update();
+    };
+
+    stop() {
+        if(this.mainLoop) cancelAnimationFrame(this.mainLoop);
+        this.canvas.removeEventListener('mousemove', this.getMousePos);
+        this.canvas.removeEventListener('click', this.battleStart);
     };
 };

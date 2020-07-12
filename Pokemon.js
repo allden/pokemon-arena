@@ -1,9 +1,7 @@
 class Pokemon {
-    constructor(canvas, x, y, name, ability, movesArr, statsObj, sprites, width, height, front=true) {
+    constructor(canvas, x, y, name, statsObj, sprites, width, height, front=true) {
         // Pokemon dimensions and stats
         this.name = name;
-        this.ability = ability;
-        this.movesArr = movesArr;
         this.statsObj = statsObj;
         this.sprites = sprites;
         this.width = width;
@@ -16,6 +14,10 @@ class Pokemon {
         this.x = x;
         this.y = y;
         this.loadImage();
+    };
+
+    getFormattedName() {
+        return formatText(this.name);
     };
 
     loadImage() {
@@ -31,23 +33,53 @@ class Pokemon {
     };
 };
 
-class PokemonBattle extends Pokemon {
-    constructor() {
-        super();
+class PokemonBattleIcon extends Pokemon {
+    constructor(identity, ...args) {
+        super(...args);
+        // This will be used to identify whether the sprite is the player or the enemy.
+        this.identity = identity;
+        this.health = this.statsObj.hp;
+    };
+
+    attackSelected(Target) {
+        let {attack} = this.statsObj;
+        let attackPower = (attack / Target.statsObj.defense) * Math.floor(Math.random() * 200);
+        Target.statsObj.hp -= attackPower;
+
+        if(Target.statsObj.hp <= 0) console.log('END!');
+    };
+
+    displayHealth() {
+        const {health} = this;
+        let healthBarWidth, healthBarHeight, healthBarX, healthBarY;
+        healthBarWidth = this.width - this.width * 0.15;
+        healthBarHeight = this.height * 0.20;
+        healthBarX = this.x + (this.width-healthBarWidth)/2;
+        if(this.identity.toLowerCase() === 'player') {
+            healthBarY = this.y + this.height - healthBarHeight;
+        } else {
+            healthBarY = this.y;
+        };
+
+        this.healthBar = new HealthBar(this.canvas, healthBarX, healthBarY, healthBarWidth, healthBarHeight, "#333", this.getFormattedName(), health);
+        this.healthBar.draw();
     };
 };
 
 class PokemonSelectIcon extends Pokemon {
-    constructor(...args) {
+    constructor(ability, movesArr, ...args) {
         super(...args);
+        this.ability = ability;
+        this.movesArr = movesArr;
     };
 
     createInfoCard() {
-        this.InfoScreen = new InfoScreen(this, this.canvas, this.width/2, 0, this.width/2, this.height, "#ddd");
+        this.InfoScreen = new InfoScreen(this, this.canvas, this.canvas.width/2, 0, this.canvas.width/2, this.canvas.height, "#333");
         this.InfoScreen.createInfoScreen();
     };
 
     hoverEffect() {
+        // As long as your mouse is over an image of a pokemon, the loop will create a transparent rectangle
         this.ctx.fillStyle = "rgba(32, 64, 128, 0.4)";
         this.ctx.fillRect(this.x, this.y, this.width, this.height);
         this.ctx.fill();

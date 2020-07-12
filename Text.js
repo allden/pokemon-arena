@@ -11,9 +11,9 @@ class Text {
     draw() {
         const {size, font, color, textAlign} = this.params;
         const {str, ctx} = this;
-        ctx.font = `${size}px ${font}`;
         ctx.fillStyle = `${color}`;
         ctx.textAlign = textAlign ? textAlign : 'left';
+        ctx.font = `${size}px ${font}`;
         if(this.x === 'left' || this.x === 'center' || this.x === 'right') {
             this.x = this.center();
         };
@@ -23,12 +23,18 @@ class Text {
 
     getWidth() {
         const {str, ctx} = this;
+        const {size, font} = this.params;
+        // Resetting the font size is necessary in order to get an accurate representation of the current width
+        this.ctx.font = `${size}px ${font}`;
         let strMeasurements = ctx.measureText(str);
         return strMeasurements.width;
     };
 
     getHeight() {
         const {str, ctx} = this;
+        const {size, font} = this.params;
+        // Resetting the font size is necessary in order to get an accurate representation of the current height
+        this.ctx.font = `${size}px ${font}`;
         let strMeasurements = ctx.measureText(str);
         return strMeasurements.actualBoundingBoxAscent;
     };

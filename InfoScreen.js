@@ -3,7 +3,7 @@ class InfoScreen extends Container {
         super(...args);
         if(Pokemon) {
             this.Pokemon = Pokemon;
-            this.name = `Name: ${formatText(this.Pokemon.name)}`;
+            this.name = `Name: ${this.Pokemon.getFormattedName()}`;
             this.ability = `Ability: ${formatText(this.Pokemon.ability)}`;
             this.statStr = this.Pokemon.getStatInfo();
             this.moveStr = this.Pokemon.getMoveInfo();
@@ -21,17 +21,23 @@ class InfoScreen extends Container {
         const textOptions = {
             font: 'Arial',
             size: this.canvas.width/64,
-            color: '#333'
+            color: '#ddd'
+        };
+
+        const titleOptions = {
+            ...textOptions,
+            size: this.canvas.width/48
         };
         
-        this.nameText = new Text(canvas, 'right', margin, name, textOptions);
+        let nameTextY = canvas.height/10 + margin;
+        this.nameText = new Text(canvas, 'right', nameTextY, name, titleOptions);
         this.nameText.draw();
         
         // Image centered between the name and the move and stat data
-        let imageWidth = canvas.height/2/2;
+        let imageWidth = canvas.height/3;
         let imageHeight = imageWidth;
         let generatedTextY = canvas.height-canvas.height/10;
-        let imageY = margin + (generatedTextY - margin)/2 - imageHeight;
+        let imageY = (generatedTextY - nameTextY - imageHeight + margin)/2;
         this.Pokemon.drawImage(canvas.width/2 + canvas.width/2/2 - imageWidth/2, imageY, imageWidth, imageHeight);
 
         this.generateText([ability, ...moveStr], canvas.width/2 + margin, generatedTextY, textOptions, 'left');
