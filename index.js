@@ -1,3 +1,9 @@
-const {clientWidth, clientHeight} = document.body;
+let {clientWidth, clientHeight} = document.body;
 const newGame = new Game(clientWidth, clientHeight);
-newGame.init();
+newGame.fetchPokemon();
+
+window.addEventListener('resize', () => {
+    clientWidth = document.body.clientWidth;
+    clientHeight = document.body.clientHeight;
+    newGame.init(clientWidth, clientHeight);
+});

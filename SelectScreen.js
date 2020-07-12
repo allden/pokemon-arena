@@ -1,12 +1,14 @@
 class SelectScreen extends Container {
-    constructor(...args) {
+    constructor(fetchedPokemon, ...args) {
         super(...args);
-        this.fetchedPokemon = [];
+        this.fetchedPokemon = fetchedPokemon;
+        // pokemonList is the Pokemon Class array
         this.pokemonList = [];
-        this.fetchPokemon();
+        console.log('SELECT SCREEN', this.fetchedPokemon);
     };
 
-    async createSelectScreen() {
+    createSelectScreen() {
+        console.log('Creating...');
         // Matrix controls
         let row = 0;
         let col = 0;
@@ -32,7 +34,7 @@ class SelectScreen extends Container {
             let x = col * pkmnWidth;
             col++;
 
-            // If the value of x is the same as the width of the container, it is going to exceed it. Therefore, we want to move to a new row and reset the columns.
+            // If the value of x is the same as the width of the container, it is going to exceed it. Therefore, I want to move to a new row and reset the columns.
             if((this.width / x) === 1) {
                 row++
                 col = 0;
@@ -40,31 +42,14 @@ class SelectScreen extends Container {
                 col++;
             };
             let y = row * pkmnHeight;
+
+            // This is necessary for me to be able to center the Pokemon image matrix.
             let totalRows = this.fetchedPokemon.length/matrixDimensions;
 
             this.pokemonList.push(new PokemonSelectIcon(this.canvas, x, 
                 (this.height/2 - (pkmnHeight*totalRows)/2) + y,
-                 name, nonHiddenAbility, moves, stats, sprites, pkmnWidth, pkmnHeight, true));
-        });
-    };
-
-    async fetchPokemon() {
-        this.pokemon = await fetch("https://pokeapi.co/api/v2/pokemon/?limit=20")
-            .then(res => res.json())
-            .then(data => data.results);
-
-        // Get all specific pokemon URLs
-        this.pokemonUrlList = this.pokemon.map(item => item.url);
-        
-        // Use those URLs to fetch specific data about each pokemon
-        return Promise.all(this.pokemonUrlList.map(url => {
-            return fetch(url)
-            .then(res => res.json());
-        }))
-        .then(data => {
-            this.fetchedPokemon = data;
-            this.createSelectScreen();
-        });
+                name, nonHiddenAbility, moves, stats, sprites, pkmnWidth, pkmnHeight, true));
+            });
     };
 
     checkIfWithinBoundaries(mousePos) {
@@ -74,7 +59,7 @@ class SelectScreen extends Container {
             if((mousePos.x < Pokemon.x + Pokemon.width && mousePos.x > Pokemon.x) &&
             (mousePos.y < Pokemon.y + Pokemon.height && mousePos.y > Pokemon.y)) {
                 Pokemon.createInfoCard();
-                Pokemon.hover();
+                Pokemon.hoverEffect();
             };
         });
     };
@@ -82,7 +67,7 @@ class SelectScreen extends Container {
     refresh() {
         this.createContainer();
         this.pokemonList.forEach(async Pokemon => {
-            Pokemon.drawImage();
+            Pokemon.drawImage(Pokemon.x, Pokemon.y, Pokemon.width, Pokemon.height);
         });
     };
 };

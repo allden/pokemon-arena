@@ -21,13 +21,13 @@ class Pokemon {
     loadImage() {
         this.sprite = new Image();
         this.sprite.onload = () => {
-            this.drawImage();
+            this.drawImage(this.x, this.y, this.width, this.height);
         };
         this.sprite.src = this.front ? this.sprites.front_default : this.sprites.back_default;
     };
 
-    drawImage() {
-        this.ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height);
+    drawImage(x, y, width, height) {
+        this.ctx.drawImage(this.sprite, x, y, width, height);
     };
 };
 
@@ -43,30 +43,28 @@ class PokemonSelectIcon extends Pokemon {
     };
 
     createInfoCard() {
-        let name = `Name: ${formatText(this.name)}`;
-        let ability = `Ability: ${formatText(this.ability)}`;
-        let statStr = this.getStatInfo();
-        let moveStr = this.getMoveInfo();
+        this.InfoScreen = new InfoScreen(this, this.canvas, this.width/2, 0, this.width/2, this.height, "#ddd");
+        this.InfoScreen.createInfoScreen();
     };
 
-    hover() {
-        this.ctx.fillStyle = "rgba(64, 128, 32, 0.4)";
+    hoverEffect() {
+        this.ctx.fillStyle = "rgba(32, 64, 128, 0.4)";
         this.ctx.fillRect(this.x, this.y, this.width, this.height);
         this.ctx.fill();
     };
 
     getStatInfo() {
-        let textData = '';
+        let textData = [];
         for(let key in this.statsObj) {
-            textData+=`${formatText(key)}: ${this.statsObj[key]}\n`;
+            textData.push(`${formatText(key)}: ${this.statsObj[key]}`);
         };
         return textData;
     };
 
     getMoveInfo() {
-        let textData = '';
+        let textData = [];
         this.movesArr.forEach((move, index) => {
-            textData+=`Move ${index}: ${formatText(move)}\n`; 
+            textData.push(`Move ${index}: ${formatText(move)}`); 
         });
         return textData;
     };
