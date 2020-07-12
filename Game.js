@@ -8,7 +8,7 @@ class Game extends Canvas {
 
     // This is located in Game so I don't have to make an API call each time I resize.
     async fetchPokemon() {
-        return await fetch("https://pokeapi.co/api/v2/pokemon/?limit=5")
+        return await fetch("https://pokeapi.co/api/v2/pokemon/?limit=10")
         .then(res => res.json())
         .then(data => {
             // Get all specific pokemon URLs

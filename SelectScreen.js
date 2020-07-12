@@ -80,8 +80,7 @@ class SelectScreen extends Container {
                 let randNum = Math.floor(Math.random() * this.pokemonList.length);
                 let Player = Pokemon;
                 let Enemy = this.pokemonList[randNum];
-                this.Battle = new Battle(this.canvas.width, this.canvas.height, Player, Enemy);
-                this.Battle.init();
+                newBattle.start(Player, Enemy);
             };
         })
     };

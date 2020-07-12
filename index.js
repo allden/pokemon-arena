@@ -1,5 +1,6 @@
 let {clientWidth, clientHeight} = document.body;
 const newGame = new Game(clientWidth, clientHeight);
+const newBattle = new Battle(clientWidth, clientHeight);
 newGame.fetchPokemon();
 let resizeFunc = newGame.init;
 

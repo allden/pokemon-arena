@@ -23,12 +23,12 @@ class Pokemon {
     loadImage() {
         this.sprite = new Image();
         this.sprite.onload = () => {
-            this.drawImage(this.x, this.y, this.width, this.height);
+            this.drawImage();
         };
         this.sprite.src = this.front ? this.sprites.front_default : this.sprites.back_default;
     };
 
-    drawImage(x, y, width, height) {
+    drawImage(x=this.x, y=this.y, width=this.width, height=this.height) {
         this.ctx.drawImage(this.sprite, x, y, width, height);
     };
 };
@@ -38,19 +38,22 @@ class PokemonBattleIcon extends Pokemon {
         super(...args);
         // This will be used to identify whether the sprite is the player or the enemy.
         this.identity = identity;
+        this.maxHealth = this.statsObj.hp;
         this.health = this.statsObj.hp;
     };
 
     attackSelected(Target) {
         let {attack} = this.statsObj;
-        let attackPower = (attack / Target.statsObj.defense) * Math.floor(Math.random() * 200);
-        Target.statsObj.hp -= attackPower;
+        let attackPower = Math.floor((attack / Target.statsObj.defense) * Math.floor(Math.random() * 30));
+        Target.takeDamage(attackPower);
+    };
 
-        if(Target.statsObj.hp <= 0) console.log('END!');
+    takeDamage(amount) {
+        this.health-=amount;
+        this.healthBar.draw(this.health);
     };
 
     displayHealth() {
-        const {health} = this;
         let healthBarWidth, healthBarHeight, healthBarX, healthBarY;
         healthBarWidth = this.width - this.width * 0.15;
         healthBarHeight = this.height * 0.20;
@@ -61,8 +64,13 @@ class PokemonBattleIcon extends Pokemon {
             healthBarY = this.y;
         };
 
-        this.healthBar = new HealthBar(this.canvas, healthBarX, healthBarY, healthBarWidth, healthBarHeight, "#333", this.getFormattedName(), health);
-        this.healthBar.draw();
+        // Need to make sure this doesn't point to the dynamically changing this.health, but rather to the MAX health of the pokemon.
+        this.healthBar = new HealthBar(this.canvas, healthBarX, healthBarY, healthBarWidth, healthBarHeight, "#333", this.getFormattedName(), this.health, this.maxHealth);
+        this.healthBar.draw(this.health);
+    };
+
+    heal() {
+        this.health = this.maxHealth;
     };
 };
 

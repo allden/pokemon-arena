@@ -6,6 +6,10 @@ class Canvas {
         this.ctx = this.canvas.getContext('2d');
     };
 
+    clear() {
+        this.ctx.clearRect(0, 0, this.width, this.height);
+    };
+
     config() {
         // Set canvas width and height
         this.canvas.width = this.width;
