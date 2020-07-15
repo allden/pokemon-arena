@@ -68,7 +68,9 @@ class PokemonBattleIcon extends Pokemon {
         if(result < 0) this.health = 0;
         else this.health = result;
         this.healthBar.draw(this.health);
-        this.blink();
+        if(amount !== 0) {
+            this.blink();
+        };
     };
 
     blink() {

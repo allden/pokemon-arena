@@ -87,7 +87,7 @@ class SelectScreen extends Container {
                 let filteredPkmnList = this.pokemonList.filter(Opponent => Opponent.name !== Pokemon.name);
                 let randNum = Math.floor(Math.random() * filteredPkmnList.length);
                 let Player = Pokemon;
-                let Enemy = this.pokemonList[randNum];
+                let Enemy = filteredPkmnList[randNum];
                 newBattle.start(this.canvas.width, this.canvas.height, Player, Enemy);
             };
         })
